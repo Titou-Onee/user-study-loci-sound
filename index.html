@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Expérience — Méthode des Loci & Sons</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0f14;--surf:#14181f;--brd:#252b36;
+  --acc:#7eb8f7;--acc2:#f7c97e;
+  --txt:#e8ecf2;--mut:#6b7585;
+  --danger:#f77e7e;--success:#7ef7b8;
+  --r:12px;
+}
+body{
+  background:var(--bg);color:var(--txt);
+  font-family:'Segoe UI',system-ui,sans-serif;
+  font-size:15px;min-height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  padding:24px;
+}
+.screen{display:none;width:100%;max-width:680px;animation:fadeUp .3s ease both}
+.screen.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.card{background:var(--surf);border:1px solid var(--brd);border-radius:var(--r);padding:40px 44px;}
+@media(max-width:540px){.card{padding:28px 20px}}
+.tag{display:inline-block;font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--acc);border:1px solid var(--acc);border-radius:4px;padding:3px 8px;margin-bottom:18px;}
+.tag-practice{color:var(--acc2);border-color:var(--acc2);}
+h1{font-size:clamp(1.7rem,4vw,2.4rem);line-height:1.2;margin-bottom:14px;font-weight:700}
+h2{font-size:1.3rem;margin-bottom:10px;font-weight:600}
+p{color:var(--mut);line-height:1.7;margin-bottom:10px}
+p strong, strong{color:var(--txt);font-weight:600}
+hr{border:none;border-top:1px solid var(--brd);margin:20px 0}
+.btn{display:inline-block;cursor:pointer;border:none;border-radius:8px;font-family:inherit;font-size:14px;font-weight:600;padding:12px 28px;transition:all .15s ease;letter-spacing:.03em;}
+.btn-primary{background:var(--acc);color:#0d0f14}
+.btn-primary:hover{background:#a8d4ff;transform:translateY(-1px)}
+.btn-success{background:var(--success);color:#0d0f14;font-size:15px;padding:14px 36px;width:100%}
+.btn-success:hover{background:#a8ffda;transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:var(--acc);border:1px solid var(--acc);font-size:13px;padding:6px 14px}
+.btn-ghost:hover{background:rgba(126,184,247,.08)}
+.btn-warn{background:var(--acc2);color:#0d0f14}
+.btn-warn:hover{background:#ffdfa8;transform:translateY(-1px)}
+.btn:disabled{opacity:.35;cursor:not-allowed;transform:none!important}
+input[type=text],input[type=number]{width:100%;background:var(--bg);border:1px solid var(--brd);border-radius:8px;color:var(--txt);font-family:inherit;font-size:15px;padding:11px 16px;outline:none;transition:border-color .15s;margin-top:6px;}
+input[type=text]:focus,input[type=number]:focus{border-color:var(--acc)}
+label{font-size:13px;color:var(--mut);display:block}
+.word-big{font-size:clamp(2.6rem,8vw,5rem);font-weight:700;color:var(--txt);padding:50px 20px 20px;letter-spacing:.02em;min-height:160px;display:flex;align-items:center;justify-content:center;}
+.word-big.practice-word{color:var(--acc2);}
+.fixation-cross{font-size:52px;color:var(--mut);display:flex;align-items:center;justify-content:center;height:160px;}
+.word-counter{font-size:12px;color:var(--mut);letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px}
+.progress-track{height:4px;background:var(--brd);border-radius:99px;overflow:hidden;max-width:400px;margin:0 auto}
+.progress-fill{height:100%;background:var(--acc);border-radius:99px;transition:width .4s ease}
+.progress-fill.practice-fill{background:var(--acc2);}
+.timer-big{font-size:clamp(3rem,10vw,5.5rem);font-weight:700;color:var(--acc2);letter-spacing:.04em;text-align:center;padding:16px 0 6px}
+.timer-label{font-size:12px;color:var(--mut);text-align:center;text-transform:uppercase;letter-spacing:.1em;margin-bottom:20px}
+.math-box{background:var(--bg);border:1px solid var(--brd);border-radius:var(--r);padding:24px 28px;text-align:center;margin:16px 0;}
+.math-q{font-size:1.4rem;font-weight:700;color:var(--txt);margin-bottom:14px}
+.math-row{display:flex;gap:10px;justify-content:center;align-items:center}
+.math-row input{max-width:130px;text-align:center;margin-top:0}
+.math-fb{font-size:13px;margin-top:10px;min-height:20px}
+.recall-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0}
+@media(max-width:500px){.recall-grid{grid-template-columns:1fr}}
+.recall-row{display:flex;align-items:center;gap:8px}
+.recall-num{font-size:12px;color:var(--mut);width:22px;text-align:right;flex-shrink:0}
+.recall-row input{margin-top:0}
+.results-block{background:var(--bg);border:1px solid var(--brd);border-radius:8px;padding:18px 22px;font-size:13px;font-family:'Courier New',monospace;line-height:1.8;color:var(--txt);white-space:pre-wrap;margin:16px 0;word-break:break-word;}
+.badge{display:inline-block;padding:3px 10px;border-radius:99px;font-size:12px;font-weight:600}
+.badge-1{background:rgba(126,184,247,.12);color:var(--acc);border:1px solid rgba(126,184,247,.3)}
+.badge-2{background:rgba(247,201,126,.12);color:var(--acc2);border:1px solid rgba(247,201,126,.3)}
+.err{color:var(--danger);font-size:13px;margin-top:8px}
+details summary{cursor:pointer;font-size:13px;color:var(--mut);margin-bottom:8px;user-select:none}
+/* Bandeau practice */
+.practice-banner{
+  background:rgba(247,201,126,.08);border:1px solid rgba(247,201,126,.25);
+  border-radius:8px;padding:10px 16px;margin-bottom:18px;
+  font-size:13px;color:var(--acc2);display:flex;align-items:center;gap:8px;
+}
+/* Score practice */
+.score-box{
+  background:var(--bg);border:1px solid var(--brd);border-radius:8px;
+  padding:20px 24px;text-align:center;margin:16px 0;
+}
+.score-num{font-size:3rem;font-weight:700;color:var(--acc2);}
+.score-label{font-size:13px;color:var(--mut);margin-top:4px;}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     ÉCRAN 1 — Accueil
+══════════════════════════════════════════ -->
+<div id="screen-welcome" class="screen active">
+  <div class="card">
+    <div class="tag">Cognitive study</div>
+    <h1>Loci method<br><span style="color:var(--mut);font-weight:400;font-size:.7em">& Sounds</span></h1>
+    <p>Welcome to this experiment on <strong>word memorization</strong> using the Method of Loci (memory palace).</p>
+    <p><strong>The Method of Loci</strong> is an ancient mnemonic strategy based on spatial memory. It involves associating abstract information (such as a list of words) with familiar physical locations (like the rooms of your house or steps of your daily commute). By anchoring new memories into these visual "slots," the brain can store and retrieve information more easily, and crucially, in the exact sequence.</p>
+    <p>To put it into practice, follow these steps:</p>
+    <p><strong>Choose your palace</strong>: Mentally visualize a room you know by heart, such as your familly house, and establish a logical path step by step.</p>
+    <p><strong>Place each word</strong>: As each word appears, mentally "deposit" it at the next location on your route. Try to create a vivid, unusual image.</p>
+    <p><strong>Walk through for recall</strong>: When it's time to write the list, mentally retrace your steps — the word you left at each location will naturally come back to you.</p>
+    <p>You will see <strong>20 words</strong> appear one by one. A distractor task will follow, after which you will recall the words.</p>
+    <br><br>
+    <p><strong>Please begin by the pre-test (start at 5 digits)</strong></p>
+    <a href="https://cognitivetrain.com/digit-span-test/" target="_blank">Memory pre-test</a>
+    <hr/>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:4px">
+      <div style="flex:1;min-width:160px">
+        <label for="name-input">Name :</label>
+        <input type="text" id="name-input" placeholder="ex : Marie" autocomplete="given-name"/>
+      </div>
+      <div style="flex:1;min-width:160px">
+        <label for="pretest-input">Pre-test score (0–20) :</label>
+        <input type="number" id="pretest-input" placeholder="ex : 7" min="0" max="20"/>
+      </div>
+    </div>
+    <p id="pretest-err" class="err" style="display:none">⚠ Please enter your name and pre-test score before beginning.</p>
+    <div style="margin-top:24px">
+      <button class="btn btn-primary" onclick="startExperiment()">Start the experiment →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ÉCRAN 2 — Instructions pratique
+══════════════════════════════════════════ -->
+<div id="screen-practice-intro" class="screen">
+  <div class="card">
+    <div class="tag tag-practice">Practice phase</div>
+    <h2>Practice round</h2>
+    <div class="practice-banner">⚠ This is a practice round — results will NOT be recorded.</div>
+    <p>Before the real experiment, you will first do a <strong>short practice</strong> with <strong>5 fictional words</strong>.</p>
+    <p>The words will appear at the same pace as the real experiment (<strong>5 seconds each</strong>). A sound will accompany each word.</p>
+    <p>After the 5 words, you will be asked to <strong>recall them immediately</strong> — in the correct order.</p>
+    <p>Use this opportunity to get comfortable with the interface and test your memory palace technique by binding each words to the mental representation of the palace</p>
+    <hr/>
+    <p style="font-size:13px">Group : <span id="group-badge-practice" class="badge">—</span></p>
+    <div style="margin-top:24px">
+      <button class="btn btn-warn" onclick="startPracticeEncoding()">Start practice →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ÉCRAN 3 — Encodage pratique
+══════════════════════════════════════════ -->
+<div id="screen-practice-encoding" class="screen">
+  <div class="practice-banner" style="max-width:680px;margin:0 auto 16px;">⚠ Practice round — fictional words</div>
+  <div id="practice-encoding-center">
+    <div class="fixation-cross">+</div>
+  </div>
+  <div id="practice-counter-wrap" class="word-counter" style="visibility:hidden">
+    Practice word <span id="practice-word-num">1</span> / 5
+  </div>
+  <div class="progress-track">
+    <div class="progress-fill practice-fill" id="practice-progress-fill" style="width:0%"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ÉCRAN 4 — Rappel pratique
+══════════════════════════════════════════ -->
+<div id="screen-practice-recall" class="screen">
+  <div class="card">
+    <div class="tag tag-practice">Practice — Recall</div>
+    <div class="practice-banner">⚠ Practice round — results will NOT be recorded.</div>
+    <h2>Recall the 5 practice words</h2>
+    <p>Type the 5 fictional words in the order they appeared. Leave a field blank if you don't remember.</p>
+    <div class="recall-grid" id="practice-recall-grid" style="grid-template-columns:1fr"></div>
+    <div style="margin-top:20px">
+      <button class="btn btn-warn" onclick="submitPracticeRecall()">Check my answers →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ÉCRAN 5 — Résultats pratique
+══════════════════════════════════════════ -->
+<div id="screen-practice-results" class="screen">
+  <div class="card">
+    <div class="tag tag-practice">Practice — Results</div>
+    <div class="practice-banner">⚠ These results are for practice only and are not recorded.</div>
+    <h2>Practice results</h2>
+    <div class="score-box">
+      <div class="score-num" id="practice-score-num">—</div>
+      <div class="score-label">words recalled correctly (out of 5)</div>
+    </div>
+    <div id="practice-answers-review" style="margin:16px 0;font-size:13px;line-height:2"></div>
+    <p>Feel free to re-read the instructions and adjust your technique before the real experiment begins.</p>
+    <hr/>
+    <p style="font-size:13px;color:var(--mut);margin-bottom:16px">When you feel ready, start the real memorization phase.</p>
+    <button class="btn btn-primary" onclick="showRealReady()">I'm ready — start the real experiment →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ÉCRAN 6 — Préparation encodage réel
+══════════════════════════════════════════ -->
+<div id="screen-ready" class="screen">
+  <div class="card">
+    <div class="tag">Phase 1 — Memorization</div>
+    <h2>Get Ready</h2>
+    <p>The <strong>20 real words</strong> will now appear one by one, for <strong>4 seconds</strong> each. A sound will accompany each word.</p>
+    <p>Memorize them in order using your memory palace. <strong>No note-taking allowed.</strong></p>
+    <hr/>
+    <p style="font-size:13px">Group : <span id="group-badge" class="badge">—</span></p>
+    <div style="margin-top:24px">
+      <button class="btn btn-primary" onclick="startEncoding()">I'm ready →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ÉCRAN 7 — Encodage réel
+══════════════════════════════════════════ -->
+<div id="screen-encoding" class="screen">
+  <div id="encoding-center">
+    <div class="fixation-cross">+</div>
+  </div>
+  <div id="word-counter-wrap" class="word-counter" style="visibility:hidden">Word <span id="word-num">1</span> / 20</div>
+  <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ÉCRAN 8 — Tâche distractive
+══════════════════════════════════════════ -->
+<div id="screen-filler" class="screen">
+  <div class="card">
+    <div class="tag">Phase 2 — Distractor task</div>
+    <h2>Mental arithmetic</h2>
+    <p>Please solve the following operations. This will prevent you from mentally rehearsing the words.</p>
+    <div class="timer-big" id="timer-display">--:--</div>
+    <div class="timer-label">time remaining</div>
+    <div class="math-box">
+      <div class="math-q" id="math-question">Loading…</div>
+      <div class="math-row">
+        <input type="number" id="math-answer" placeholder="Answer"/>
+        <button class="btn btn-ghost" onclick="checkMath()">OK</button>
+      </div>
+      <div class="math-fb" id="math-feedback"></div>
+    </div>
+    <div style="margin-top:20px">
+      <button class="btn btn-primary" id="filler-next-btn" onclick="showRecallInstructions()" disabled>Continue →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ÉCRAN 9 — Instructions rappel réel
+══════════════════════════════════════════ -->
+<div id="screen-recall-intro" class="screen">
+  <div class="card">
+    <div class="tag">Phase 3 — Recall</div>
+    <h2>Recall the words</h2>
+    <p>Type the <strong>20 words</strong> in the order they appeared. Use your memory palace to retrieve them.</p>
+    <p>If you cannot remember a word, <strong>leave the field blank</strong>. Do not guess randomly.</p>
+    <p>Take your time — there is no time limit for this phase.</p>
+    <div style="margin-top:24px">
+      <button class="btn btn-primary" onclick="showRecall()">Begin the recall →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ÉCRAN 10 — Rappel réel (20 champs)
+══════════════════════════════════════════ -->
+<div id="screen-recall" class="screen">
+  <div class="card">
+    <div class="tag">Recall — 20 words</div>
+    <h2>In which order did you see them?</h2>
+    <div class="recall-grid" id="recall-grid"></div>
+    <div style="margin-top:20px">
+      <button class="btn btn-primary" onclick="submitRecall()">Validate →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ÉCRAN 11 — Fin & Export
+══════════════════════════════════════════ -->
+<div id="screen-end" class="screen">
+  <div class="card">
+    <div class="tag">End of the study</div>
+    <h2>Thank you for participating 🎉</h2>
+    <p>The experiment is finished. Click the button below to submit your results.</p>
+    <hr/>
+    <button class="btn btn-success" id="form-btn" onclick="openForm()">
+      ✓ Validate and send the results (Google Forms)
+    </button>
+    <details style="margin-top:20px">
+      <summary>ⓘ Show raw data (if the button doesn't work)</summary>
+      <p style="font-size:12px;color:var(--mut);margin-top:8px">Copy and paste this text into your form manually.</p>
+      <div class="results-block" id="results-raw"></div>
+      <button class="btn btn-ghost" onclick="copyResults()">Copy to clipboard</button>
+    </details>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   ① CONFIGURATION
+   ========================================================= */
+
+const DEBUG_TIMER = true; // true = 10 secondes | false = 10 minutes
+
+const WORD_DURATION  = 5000; // ms par mot
+const FIXATION_DUR   = 500;  // ms croix de fixation
+const FILLER_SECONDS = DEBUG_TIMER ? 10 : 600;
+
+// ── 5 mots fictifs pour la phase de pratique ──
+// Remplacez par des pseudo-mots ou mots neutres de votre choix
+const PRACTICE_WORDS = ["Earth", "Passenger", "Goose", "Elevation", "Water"];
+
+// ── Son neutre pour la pratique (Groupe 1 et aussi pendant la pratique du Groupe 2) ──
+// Un seul son générique joué pendant la pratique
+const AUDIO_PRACTICE_NEUTRAL = "audio/piano_note1.mp3";
+
+// ── 20 mots réels ──
+const WORD_LIST = [
+  "Whale",   "President",  "Spain",  "Activity",   "Destination",
+  "Clock",   "Travel",    "Question",    "Chair",  "Banana",
+  "River",   "Phone",   "Cake",    "Sun", "Bicycle",
+  "Basket",   "Snail", "Pirate",  "Keyboard",  "Car"
+];
+
+// ── Sons réels ──
+const AUDIO_NEUTRAL = [
+  "audio/piano_note1.mp3",  "audio/piano_note2.mp3",
+  "audio/piano_note3.mp3",  "audio/piano_note4.mp3",
+  "audio/piano_note5.mp3",  "audio/piano_note6.mp3",
+  "audio/piano_note7.mp3",  "audio/piano_note8.mp3",
+  "audio/piano_note9.mp3",  "audio/piano_note10.mp3",
+  "audio/piano_note11.mp3", "audio/piano_note12.mp3",
+  "audio/piano_note13.mp3", "audio/piano_note14.mp3",
+  "audio/piano_note15.mp3", "audio/piano_note16.mp3",
+  "audio/piano_note17.mp3", "audio/piano_note18.mp3",
+  "audio/piano_note19.mp3", "audio/piano_note20.mp3",
+];
+const AUDIO_CONGRUENT = [
+  "audio/sound_locus1.mp3",  "audio/sound_locus2.mp3",
+  "audio/sound_locus3.mp3",  "audio/sound_locus4.mp3",
+  "audio/sound_locus5.mp3",  "audio/sound_locus6.mp3",
+  "audio/sound_locus7.mp3",  "audio/sound_locus8.mp3",
+  "audio/sound_locus9.mp3",  "audio/sound_locus10.mp3",
+  "audio/sound_locus11.mp3", "audio/sound_locus12.mp3",
+  "audio/sound_locus13.mp3", "audio/sound_locus14.mp3",
+  "audio/sound_locus15.mp3", "audio/sound_locus16.mp3",
+  "audio/sound_locus17.mp3", "audio/sound_locus18.mp3",
+  "audio/sound_locus19.mp3", "audio/sound_locus20.mp3",
+];
+
+// ── Google Form ──
+const GOOGLE_FORM_BASE = "https://docs.google.com/forms/d/e/1FAIpQLSelpxMleUQiQFKtMn6yCk6JGo6uap4YieVan7tA1k9hx6Nhwg/viewform";
+const FIELD_NAME    = "entry.493403054";
+const FIELD_PRETEST = "entry.109538684";
+const FIELD_GROUP   = "entry.1878924459";
+const FIELDS_WORDS  = [
+  "entry.933040789", "entry.1236110408","entry.451176486", "entry.1455979751",
+  "entry.644592399", "entry.399448228", "entry.1949072201","entry.1631653598",
+  "entry.1387718909","entry.1035732924","entry.671454103", "entry.707054335",
+  "entry.1820280534","entry.223932960", "entry.374033838", "entry.1368641603",
+  "entry.994553379", "entry.2074557742","entry.474718860", "entry.1376096159",
+];
+
+/* =========================================================
+   ② ÉTAT GLOBAL
+   ========================================================= */
+const state = {
+  name            : "",
+  pretest         : "",
+  group           : null,
+  practice_answers: [],
+  answers         : [],
+};
+
+/* =========================================================
+   ③ UTILITAIRES
+   ========================================================= */
+function showScreen(id) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  const el = document.getElementById(id);
+  if (el) { el.classList.add("active"); window.scrollTo(0,0); }
+}
+
+function playSound(src) {
+  try {
+    const a = new Audio(src);
+    a.volume = 0.85;
+    a.play().catch(e => console.warn("Audio unavailable:", src, e.message));
+  } catch(e) { console.warn("Audio error:", e); }
+}
+
+function rnd(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+function generateMath() {
+  const ops = ["+", "−", "×"];
+  const op  = ops[Math.floor(Math.random() * ops.length)];
+  let a, b;
+  if (op === "+") { a = rnd(10,99); b = rnd(10,99); }
+  if (op === "−") { a = rnd(20,99); b = rnd(10, a-1); }
+  if (op === "×") { a = rnd(2,12);  b = rnd(2,12); }
+  const ans = op==="+"?a+b : op==="−"?a-b : a*b;
+  return { q:`${a} ${op} ${b}`, ans };
+}
+
+function setBadge(id, group) {
+  const badge = document.getElementById(id);
+  if (!badge) return;
+  badge.textContent = group === 1 ? "Group 1 — Neutral sounds" : "Group 2 — Congruent sounds";
+  badge.className   = "badge badge-" + group;
+}
+
+/* =========================================================
+   ④ DÉMARRAGE — validation + assignation groupe
+   ========================================================= */
+function startExperiment() {
+  const name = document.getElementById("name-input").value.trim();
+  const val  = document.getElementById("pretest-input").value.trim();
+  if (!name || !val) {
+    document.getElementById("pretest-err").style.display = "block";
+    return;
+  }
+  state.name    = name;
+  state.pretest = val;
+  state.group   = Math.random() < 0.5 ? 1 : 2;
+  console.log("[Experiment] Group:", state.group);
+
+  setBadge("group-badge-practice", state.group);
+  setBadge("group-badge", state.group);
+  showScreen("screen-practice-intro");
+}
+
+/* =========================================================
+   ⑤ PHASE DE PRATIQUE — encodage
+   ========================================================= */
+function startPracticeEncoding() {
+  showScreen("screen-practice-encoding");
+  runPracticeStep(0, "fixation");
+}
+
+function runPracticeStep(idx, phase) {
+  const center  = document.getElementById("practice-encoding-center");
+  const counter = document.getElementById("practice-counter-wrap");
+  const fill    = document.getElementById("practice-progress-fill");
+
+  if (phase === "fixation") {
+    counter.style.visibility = "hidden";
+    center.innerHTML = '<div class="fixation-cross">+</div>';
+    setTimeout(() => runPracticeStep(idx, "word"), FIXATION_DUR);
+
+  } else {
+    const word = PRACTICE_WORDS[idx];
+    center.innerHTML = `<div class="word-big practice-word">${word}</div>`;
+    document.getElementById("practice-word-num").textContent = idx + 1;
+    counter.style.visibility = "visible";
+    fill.style.width = ((idx + 1) / PRACTICE_WORDS.length * 100).toFixed(1) + "%";
+
+    // Son : neutre générique pour Groupe 1, sons assignés pour Groupe 2
+    // Pendant la pratique, le Groupe 2 entend son propre type de son
+    // mais sur les 5 premiers loci (locus 1 à 5)
+    const src = state.group === 1
+      ? AUDIO_PRACTICE_NEUTRAL
+      : AUDIO_CONGRUENT[idx];  // locus 1–5 pour la pratique
+    playSound(src);
+
+    const next = idx + 1;
+    if (next < PRACTICE_WORDS.length) {
+      setTimeout(() => runPracticeStep(next, "fixation"), WORD_DURATION);
+    } else {
+      setTimeout(showPracticeRecall, WORD_DURATION);
+    }
+  }
+}
+
+/* =========================================================
+   ⑥ PHASE DE PRATIQUE — rappel
+   ========================================================= */
+function showPracticeRecall() {
+  const grid = document.getElementById("practice-recall-grid");
+  grid.innerHTML = PRACTICE_WORDS.map((_, i) => `
+    <div class="recall-row">
+      <span class="recall-num">${i+1}.</span>
+      <input type="text" id="pr-${i}" placeholder="Word ${i+1}" autocomplete="off"/>
+    </div>
+  `).join("");
+  showScreen("screen-practice-recall");
+}
+
+function submitPracticeRecall() {
+  state.practice_answers = PRACTICE_WORDS.map((_, i) => {
+    const el = document.getElementById(`pr-${i}`);
+    return el ? el.value.trim() : "";
+  });
+
+  // Calcul du score (comparaison insensible à la casse)
+  let score = 0;
+  const review = PRACTICE_WORDS.map((correct, i) => {
+    const given = state.practice_answers[i] || "";
+    const ok    = given.toLowerCase() === correct.toLowerCase();
+    if (ok) score++;
+    return `<div style="color:${ok ? "var(--success)" : "var(--danger)"}">
+      ${i+1}. ${correct}
+      <span style="color:var(--mut)">→ you wrote:</span>
+      <strong style="color:${ok ? "var(--success)" : "var(--danger)"}">
+        ${given || "(blank)"}
+      </strong>
+      ${ok ? "✓" : "✗"}
+    </div>`;
+  }).join("");
+
+  document.getElementById("practice-score-num").textContent = `${score} / 5`;
+  document.getElementById("practice-answers-review").innerHTML = review;
+  showScreen("screen-practice-results");
+}
+
+/* =========================================================
+   ⑦ TRANSITION VERS L'EXPÉRIENCE RÉELLE
+   ========================================================= */
+function showRealReady() {
+  showScreen("screen-ready");
+}
+
+/* =========================================================
+   ⑧ ENCODAGE RÉEL
+   ========================================================= */
+function startEncoding() {
+  showScreen("screen-encoding");
+  runEncodingStep(0, "fixation");
+}
+
+function runEncodingStep(wordIndex, phase) {
+  const center  = document.getElementById("encoding-center");
+  const counter = document.getElementById("word-counter-wrap");
+  const fill    = document.getElementById("progress-fill");
+
+  if (phase === "fixation") {
+    counter.style.visibility = "hidden";
+    center.innerHTML = '<div class="fixation-cross">+</div>';
+    setTimeout(() => runEncodingStep(wordIndex, "word"), FIXATION_DUR);
+
+  } else {
+    const word = WORD_LIST[wordIndex];
+    center.innerHTML = `<div class="word-big">${word}</div>`;
+    document.getElementById("word-num").textContent = wordIndex + 1;
+    counter.style.visibility = "visible";
+    fill.style.width = ((wordIndex + 1) / WORD_LIST.length * 100).toFixed(1) + "%";
+
+    const src = state.group === 1 ? AUDIO_NEUTRAL[wordIndex] : AUDIO_CONGRUENT[wordIndex];
+    playSound(src);
+
+    const next = wordIndex + 1;
+    if (next < WORD_LIST.length) {
+      setTimeout(() => runEncodingStep(next, "fixation"), WORD_DURATION);
+    } else {
+      setTimeout(startFiller, WORD_DURATION);
+    }
+  }
+}
+
+/* =========================================================
+   ⑨ TÂCHE DISTRACTIVE
+   ========================================================= */
+let fillerInterval = null;
+let currentMath    = null;
+
+function startFiller() {
+  showScreen("screen-filler");
+  const btn = document.getElementById("filler-next-btn");
+  btn.disabled = true;
+  let remaining = FILLER_SECONDS;
+
+  const updateTimer = () => {
+    const m = String(Math.floor(remaining / 60)).padStart(2, "0");
+    const s = String(remaining % 60).padStart(2, "0");
+    const el = document.getElementById("timer-display");
+    if (el) el.textContent = `${m}:${s}`;
+  };
+  updateTimer();
+  newMathQuestion();
+
+  fillerInterval = setInterval(() => {
+    remaining--;
+    updateTimer();
+    if (remaining <= 0) {
+      clearInterval(fillerInterval);
+      btn.disabled = false;
+      const fb = document.getElementById("math-feedback");
+      if (fb) { fb.style.color = "var(--success)"; fb.textContent = "✓ Time's up — you can continue."; }
+    }
+  }, 1000);
+}
+
+function newMathQuestion() {
+  currentMath = generateMath();
+  const q = document.getElementById("math-question");
+  if (q) q.textContent = `How much is ${currentMath.q}?`;
+  const inp = document.getElementById("math-answer");
+  if (inp) inp.value = "";
+  const fb = document.getElementById("math-feedback");
+  if (fb) fb.textContent = "";
+}
+
+function checkMath() {
+  const inp = document.getElementById("math-answer");
+  const fb  = document.getElementById("math-feedback");
+  if (!inp || !currentMath) return;
+  const val = parseInt(inp.value, 10);
+  if (isNaN(val)) return;
+  if (val === currentMath.ans) {
+    fb.style.color = "var(--success)";
+    fb.textContent = "✓ Correct!";
+  } else {
+    fb.style.color = "var(--danger)";
+    fb.textContent = `✗ Incorrect. The answer was ${currentMath.ans}.`;
+  }
+  setTimeout(newMathQuestion, 800);
+}
+
+document.addEventListener("keydown", e => {
+  if (e.key === "Enter" && document.getElementById("screen-filler")?.classList.contains("active")) {
+    checkMath();
+  }
+});
+
+/* =========================================================
+   ⑩ RAPPEL RÉEL
+   ========================================================= */
+function showRecallInstructions() { showScreen("screen-recall-intro"); }
+
+function showRecall() {
+  const grid = document.getElementById("recall-grid");
+  grid.innerHTML = WORD_LIST.map((_, i) => `
+    <div class="recall-row">
+      <span class="recall-num">${i+1}.</span>
+      <input type="text" id="recall-${i}" placeholder="Word ${i+1}" autocomplete="off"/>
+    </div>
+  `).join("");
+  showScreen("screen-recall");
+}
+
+function submitRecall() {
+  state.answers = WORD_LIST.map((_, i) => {
+    const el = document.getElementById(`recall-${i}`);
+    return el ? el.value.trim() : "";
+  });
+  showEnd();
+}
+
+/* =========================================================
+   ⑪ FIN & EXPORT
+   ========================================================= */
+function showEnd() {
+  const lines = [
+    `Name        : ${state.name}`,
+    `Pre-test    : ${state.pretest}`,
+    `Group       : Group ${state.group} — ${state.group===1?"Neutral sounds (Control)":"Congruent sounds (Experimental)"}`,
+    ``,
+    `── Real recall ──`,
+    ...state.answers.map((a,i) => `Word ${String(i+1).padStart(2,"0")} : ${a || "(blank)"}`),
+    ``,
+    `── Practice recall (not recorded) ──`,
+    ...state.practice_answers.map((a,i) => `Practice ${i+1} : ${a || "(blank)"}`),
+  ].join("\n");
+  document.getElementById("results-raw").textContent = lines;
+  showScreen("screen-end");
+}
+
+function openForm() {
+  const p = new URLSearchParams();
+  p.set(FIELD_NAME,    state.name);
+  p.set(FIELD_PRETEST, state.pretest);
+  p.set(FIELD_GROUP,   `Group ${state.group}`);
+  state.answers.forEach((a, i) => p.set(FIELDS_WORDS[i], a || ""));
+  const url = `${GOOGLE_FORM_BASE}?${p.toString()}`;
+  console.log("[DEBUG] Google Form URL:", url);
+  window.location.href = url;
+}
+
+function copyResults() {
+  const text = document.getElementById("results-raw").textContent;
+  navigator.clipboard.writeText(text)
+    .then(() => alert("✓ Data copied to clipboard!"))
+    .catch(() => alert("Please select the text manually and copy it (Ctrl+C)."));
+}
+
+document.getElementById("math-answer")?.addEventListener("keydown", e => {
+  if (e.key === "Enter") checkMath();
+});
+</script>
+</body>
+</html>
